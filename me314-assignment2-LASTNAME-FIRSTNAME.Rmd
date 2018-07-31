@@ -16,6 +16,8 @@ a.  From the `cmpdata` object, replicate the reshaped object `cmpdataLong` from 
 library("reshape2")
 
 ## your code here
+
+load("cmpdata.Rdata")
 ```
 
 b.  Try using **dplyr** on `cmpdataLong` to "spread" this back into the wide format.
