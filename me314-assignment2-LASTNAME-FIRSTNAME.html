@@ -130,37 +130,205 @@ $(document).ready(function () {
 <p>Take a look of the <a href="assignment-2-complex-example-python.ipynb" class="uri">assignment-2-complex-example-python.ipynb</a> and try to do the same using R. You only need to fill in the part 1-6 here. You do <strong>not</strong> need to do the pivot table.</p>
 <p>You may find it useful to learn more how to use dataframe in R, read the <a href="how-to-manipulate-dataframe.ipynb" class="uri">how-to-manipulate-dataframe.ipynb</a>.</p>
 <p>If you get stuck somewhere, feel free to contact us! As this is a formative assignment, we are happy to give you a few lines of codes to help you to start.</p>
+<pre class="r"><code>rm(list = ls(all = TRUE))</code></pre>
 <div id="reshaping-a-simple-example." class="section level2">
 <h2>1. <strong>Reshaping a simple example.</strong></h2>
 <ol style="list-style-type: lower-alpha">
 <li>From the <code>cmpdata</code> object, replicate the reshaped object <code>cmpdataLong</code> from the lecture notes, using the <strong>reshape2</strong> package. (Just use the same syntax as in the lecture notes.)</li>
 </ol>
 <pre class="r"><code>library(&quot;reshape2&quot;)
-
-## your code here
-
-load(&quot;cmpdata.Rdata&quot;)</code></pre>
+load(&quot;cmpdata.Rdata&quot;)
+head(cmpdata)</code></pre>
+<pre><code>##     country countryname oecdmember eumember      edate   date party
+## 175      42     Austria         10        0 1990-10-07 199010 42420
+## 176      42     Austria         10        0 1990-10-07 199010 42110
+## 177      42     Austria         10        0 1990-10-07 199010 42320
+## 178      42     Austria         10        0 1990-10-07 199010 42520
+## 179      42     Austria         10        0 1994-10-09 199410 42420
+## 180      42     Austria         10        0 1994-10-09 199410 42421
+##                       partyname parfam coderid coderyear manual testresult
+## 175           FPÖ Freedom Party     40     202      1991      1      0.816
+## 176        GA Green Alternative     10     202      1991      1      0.816
+## 177 SPÖ Social Democratic Party     30     202      1991      1      0.816
+## 178          ÖVP People's Party     50     202      1991      1      0.816
+## 179           FPÖ Freedom Party     40     203      1998     NA      0.765
+## 180            LF Liberal Forum     40     203      1998     NA      0.765
+##       pervote voteest presvote absseat totseats progtype datasetorigin
+## 175 16.634764       0      998      33      183        1           100
+## 176  4.784040       0      998      10      183        1           100
+## 177 42.780708       0      998      80      183        1           100
+## 178 32.064484       0      998      60      183        1           100
+## 179 22.497438       0      998      42      183        1           100
+## 180  5.969635       0      998      11      183        1           100
+##     per101 per102 per103 per104 per105 per106 per107 per108 per109 per110
+## 175      0      0      0     37      1      1     16      3      0      0
+## 176      0      0      2      0      3      0     17      0      0      3
+## 177      0      0      0      7      2      4     44      5      3      0
+## 178      5      0      0      6      0      3     22      8      0      0
+## 179      0      0      0      7      0      0      3      1      1     11
+## 180      0      0      0      0      0      0      0      0      0      0
+##     per201 per202 per203 per204 per301 per302 per303 per304 per305 per401
+## 175     12     49      5      1      8      0     82     42     43     50
+## 176     79    230     24      0     14      2     67     39     14      5
+## 177     22     17      0      0      0      0     61      8     21      7
+## 178      1     16      3      0      8      1     21      7     23     41
+## 179    109     43     12      0      5      0     17    167    176     35
+## 180     19      3      0      0      0      0      3      1     14     22
+##     per402 per403 per404 per405 per406 per407 per408 per409 per410 per411
+## 175     19     21      6      0      0      0     14      0      0     33
+## 176      8      3      2      0      2      0     24      2      5     11
+## 177      7      6      0      0      0      1     12     10      2     29
+## 178      7      5      0      0      0      0     15      0      3     27
+## 179      8      1      0      0      0      0      6      0      2      2
+## 180      9      1      0      0      0      0      4      0      0      0
+##     per412 per413 per414 per415 per416 per501 per502 per503 per504 per505
+## 175      2      0      2      0      0     43      0      9     11     19
+## 176      5      0      0      0     38    317     45    105     73      0
+## 177      3      4      3      0      0    126     37     49     46      0
+## 178      0      0      3      0      0     64      4     14     20      0
+## 179      1      0      4      0      0     21      3     26      0     10
+## 180      0      0      3      0      1      6      4     16      3      0
+##     per506 per507 per601 per602 per603 per604 per605 per606 per607 per608
+## 175     16      0     11      0      5      0     18      6      0      1
+## 176     17      0      0     14     20     20     29     23     14      0
+## 177     32      0      0      0     12      1     28     11      3      0
+## 178     26      0      3      0     13      0      7     17      2      0
+## 179      3      0     15      0     31      0     21      5      0      5
+## 180     12      0      0      0      0      3      0      3      0      0
+##     per701 per702 per703 per704 per705 per706 peruncod total      rile
+## 175      1      9     44      0      7     32 1.600000   690  14.90000
+## 176     36      0     33      2    100     49 2.200000  1516 -12.40000
+## 177     15      0     15      3      5     29 2.500000   708  -7.60000
+## 178     11      2     10      1      4     15 2.700000   450   4.80000
+## 179      4      0      1      4      2     13 2.022756   791  47.78761
+## 180      0      0      0      0      7     11 3.333333   150  34.00000
+##       planeco   markeco   welfare intpeace
+## 175 4.1999998  7.600000  2.900000      0.4
+## 176 0.6000000  0.300000 11.700000      0.2
+## 177 1.3000000  1.400000 13.400000      0.9
+## 178 1.1000000  9.800000  7.500000      0.7
+## 179 0.2528445  4.930468  3.286978      0.0
+## 180 0.6666667 16.666666 12.666667      0.0</code></pre>
+<pre class="r"><code>cmpdataLong &lt;- melt(cmpdata,
+                    id.vars = c(&quot;countryname&quot;, &quot;party&quot;, &quot;date&quot;),
+                    measure.vars = names(cmpdata)[21:76],
+                    variable.name = &quot;category&quot;,
+                    value.name = &quot;catcount&quot;
+)
+head(cmpdataLong)</code></pre>
+<pre><code>##   countryname party   date category catcount
+## 1     Austria 42420 199010   per101        0
+## 2     Austria 42110 199010   per101        0
+## 3     Austria 42320 199010   per101        0
+## 4     Austria 42520 199010   per101        5
+## 5     Austria 42420 199410   per101        0
+## 6     Austria 42421 199410   per101        0</code></pre>
+<pre class="r"><code>typeof(cmpdataLong$category)</code></pre>
+<pre><code>## [1] &quot;integer&quot;</code></pre>
+<pre class="r"><code>cmpdataLong$category &lt;- as.character(cmpdataLong$category)  # Why???
+head(cmpdataLong)</code></pre>
+<pre><code>##   countryname party   date category catcount
+## 1     Austria 42420 199010   per101        0
+## 2     Austria 42110 199010   per101        0
+## 3     Austria 42320 199010   per101        0
+## 4     Austria 42520 199010   per101        5
+## 5     Austria 42420 199410   per101        0
+## 6     Austria 42421 199410   per101        0</code></pre>
+<pre class="r"><code>typeof(cmpdataLong$category)</code></pre>
+<pre><code>## [1] &quot;character&quot;</code></pre>
+<pre class="r"><code>with(subset(cmpdataLong, grepl(&quot;^per7&quot;, category)), table(countryname, category))</code></pre>
+<pre><code>##                category
+## countryname     per701 per702 per703 per704 per705 per706
+##   Austria           34     34     34     34     34     34
+##   Belgium           63     63     63     63     63     63
+##   Cyprus            10     10     10     10     10     10
+##   Denmark           60     60     60     60     60     60
+##   Finland           47     47     47     47     47     47
+##   France            23     23     23     23     23     23
+##   Germany           30     30     30     30     30     30
+##   Great Britain     20     20     20     20     20     20
+##   Greece            17     17     17     17     17     17
+##   Iceland           31     31     31     31     31     31
+##   Ireland           31     31     31     31     31     31
+##   Israel            32     32     32     32     32     32
+##   Italy             41     41     41     41     41     41
+##   Luxembourg        21     21     21     21     21     21
+##   Malta              4      4      4      4      4      4
+##   Netherlands       48     48     48     48     48     48
+##   Norway            28     28     28     28     28     28
+##   Portugal          38     38     38     38     38     38
+##   Spain             57     57     57     57     57     57
+##   Sweden            44     44     44     44     44     44
+##   Switzerland       30     30     30     30     30     30</code></pre>
 <ol start="2" style="list-style-type: lower-alpha">
 <li>Try using <strong>dplyr</strong> on <code>cmpdataLong</code> to “spread” this back into the wide format.</li>
 </ol>
-<pre class="r"><code>library(&quot;dplyr&quot;)</code></pre>
-<pre><code>## 
-## Attaching package: 'dplyr'</code></pre>
-<pre><code>## The following objects are masked from 'package:stats':
-## 
-##     filter, lag</code></pre>
-<pre><code>## The following objects are masked from 'package:base':
-## 
-##     intersect, setdiff, setequal, union</code></pre>
-<pre class="r"><code>## your code here</code></pre>
+<p><strong>Note:</strong> <strong>dplyr</strong> is a grammar of data manipulation, part of the <strong>tidyverse</strong>.</p>
+<pre class="r"><code>suppressPackageStartupMessages(library(&quot;dplyr&quot;))
+suppressPackageStartupMessages(library(&quot;tidyverse&quot;))
+spreadedData &lt;- spread(cmpdataLong, key = &quot;category&quot;, value = &quot;catcount&quot;)
+head(spreadedData)</code></pre>
+<pre><code>##   countryname party   date per101 per102 per103 per104 per105 per106
+## 1     Austria 42110 199010      0      0      2      0      3      0
+## 2     Austria 42110 199410      0      0      0      0      0      3
+## 3     Austria 42110 199512      0      0      0      0      1      1
+## 4     Austria 42110 199910      0      0      0      0     12      2
+## 5     Austria 42110 200211      0      0      0      0      9      4
+## 6     Austria 42110 200610      0      0      0      3      9      2
+##   per107 per108 per109 per110 per201 per202 per203 per204 per301 per302
+## 1     17      0      0      3     79    230     24      0     14      2
+## 2      2      2      0      1     20     67     21      0      0      0
+## 3      1      6      2      6     12      7      1      0      0      0
+## 4      2      0      0      1     15      3      0      0      0      0
+## 5      7     13      0      0     37     17      0      0      0      0
+## 6     52     36     11      0     36     17      1      0      0      0
+##   per303 per304 per305 per401 per402 per403 per404 per405 per406 per407
+## 1     67     39     14      5      8      3      2      0      2      0
+## 2     19     27     83      1      0      4      0      0      0      0
+## 3      1      0     17      0      0      1      0      0      0      0
+## 4      0      1     20      0      0      0      0      0      0      0
+## 5      0      0     14      0      6      2      0      0      0      0
+## 6      3      0      1      2      6     20      0      0      0      0
+##   per408 per409 per410 per411 per412 per413 per414 per415 per416 per501
+## 1     24      2      5     11      5      0      0      0     38    317
+## 2     21      0     32     68      0      0      0      0      1    239
+## 3      9      0      5      2      0      0      5      0      0      9
+## 4      1      0      0      0      0      0      0      0      4     25
+## 5      3      4      1     22      0      0      0      0     34     42
+## 6      1      1      0     38     17      1      0      0     13     62
+##   per502 per503 per504 per505 per506 per507 per601 per602 per603 per604
+## 1     45    105     73      0     17      0      0     14     20     20
+## 2      0      3      3      0      1      0      0      0      0      0
+## 3      0     14      3      0      2      0      0      4      1      0
+## 4      0     20     19      0      0      0      0      0      0      4
+## 5     18     45     35      0     33      0      0      2      0      1
+## 6     48     83     24      0     46      0     14      0      0     20
+##   per605 per606 per607 per608 per701 per702 per703 per704 per705 per706
+## 1     29     23     14      0     36      0     33      2    100     49
+## 2      0      6      0      0      0      0     51      0     90      1
+## 3      0      3      0      0      0      0      0      0      4      0
+## 4      1      1      0      0      1      0      0      0      7     17
+## 5      8      0     12      0     35      0      6      0     15     35
+## 6      9     10     15      5     33      0     13      9      0     32</code></pre>
+<pre class="r"><code># identical(spreadedData, cmpdata)
+# They are not identical because of the selection of id.vars</code></pre>
 </div>
 <div id="load-the-hpi-data" class="section level2">
 <h2>2. Load the HPI data</h2>
 <ol style="list-style-type: lower-alpha">
-<li><p>click into the <a href="rhpi.csv" class="uri">rhpi.csv</a> and have a look of the data. Does it have any header? How is each entry of the data separated? by space or comma?</p></li>
-<li><p>take a look of the <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/read.table.html"><code>read.csv</code></a> function and read the csv data to r.</p></li>
-<li><p>after the data is loaded into r, you can use <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code>head</code></a> function to take a look of the first few rows of data. Is it in long or wide format?</p></li>
-<li><p>you may find out that the first column name is empty. You may update the first column name to “country” by using <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/colnames.html"><code>colnames</code></a> function. And remember R starts counting from 1!</p></li>
+<li>click into the <a href="rhpi.csv" class="uri">rhpi.csv</a> and have a look of the data. Does it have any header? How is each entry of the data separated? by space or comma?</li>
+</ol>
+<pre class="bash"><code># cat rhpi.csv</code></pre>
+<ol start="2" style="list-style-type: lower-alpha">
+<li>take a look of the <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/read.table.html"><code>read.csv</code></a> function and read the csv data to r.</li>
+</ol>
+<pre class="r"><code># rhpi &lt;- read.csv(&quot;rhpi.csv&quot;)</code></pre>
+<ol start="3" style="list-style-type: lower-alpha">
+<li>after the data is loaded into r, you can use <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code>head</code></a> function to take a look of the first few rows of data. Is it in long or wide format?</li>
+</ol>
+<pre class="r"><code># head(rhpi)</code></pre>
+<ol start="4" style="list-style-type: lower-alpha">
+<li>you may find out that the first column name is empty. You may update the first column name to “country” by using <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/colnames.html"><code>colnames</code></a> function. And remember R starts counting from 1!</li>
 </ol>
 <pre class="r"><code>## your code (filled in for you already)
 
@@ -493,7 +661,6 @@ head(rhpi_wide)</code></pre>
 <li><p>use <a href="https://stat.ethz.ch/R-manual/R-devel/library/utils/html/head.html"><code>head()</code></a> to take a look of the data</p></li>
 <li><p>you will notice that the quarter value somehow has the X at the beginning (e.g. X1970.Q3 instead of 1970.Q3). If you want to remove the X from the quarter value, take a look of the <a href="https://stat.ethz.ch/R-manual/R-devel/library/base/html/substr.html"><code>substring()</code></a> function.</p></li>
 </ol>
-<pre class="r"><code>## your code</code></pre>
 </div>
 <div id="load-the-pdi-data-and-convert-the-pdi-data-from-wide-to-long" class="section level2">
 <h2>4. Load the PDI data and convert the PDI data from wide to long</h2>
